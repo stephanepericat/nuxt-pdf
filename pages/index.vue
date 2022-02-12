@@ -10,7 +10,7 @@
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <PdfViewer class="viewer-container">
+    <PdfViewer class="viewer-container" @scroll="onScroll">
       <PdfPage
         v-for="page in pages"
         :key="page._pageIndex"
@@ -57,6 +57,10 @@ export default defineComponent({
       consola.info('print...')
     }
 
+    const onScroll = (evt) => {
+      consola.info('scroll evt', evt)
+    }
+
     const { getFile, getPages } = usePdfData($pdf)
 
     onMounted(async () => {
@@ -67,6 +71,7 @@ export default defineComponent({
     return {
       onDownload,
       onPrint,
+      onScroll,
       pages,
     }
   },

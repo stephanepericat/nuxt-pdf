@@ -1,15 +1,33 @@
 <template>
-  <div class="pdf-viewer">
+  <div ref="viewer" class="pdf-viewer">
     <slot />
   </div>
 </template>
 <script>
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { throttledWatch, useScroll } from '@vueuse/core'
 
 export default defineComponent({
   name: 'PDFViewer',
 
-  setup() {},
+  emits: ['scroll'],
+
+  setup(_, { emit }) {
+    const viewer = ref(null)
+    const { x, y, isScrolling, arrivedState, directions } = useScroll(viewer)
+
+    throttledWatch(
+      [x, y, isScrolling, arrivedState, directions],
+      () => {
+        emit('scroll', { x, y, isScrolling, arrivedState, directions })
+      },
+      { throttle: 250 }
+    )
+
+    return {
+      viewer,
+    }
+  },
 })
 </script>
 <style lang="scss" scoped>
