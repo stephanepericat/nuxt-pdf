@@ -61,8 +61,19 @@ export default ($pdf) => {
     }
   }
 
-  const renderSvg = (page) => {
-    return Promise.resolve({})
+  const renderSvg = async (page) => {
+    const viewport = page.getViewport({ scale: $pdf.PixelsPerInch.CSS })
+    const opList = await page.getOperatorList({
+      annotationMode: $pdf.AnnotationMode.ENABLED_FORMS,
+    })
+    const svgGfx = new $pdf.SVGGraphics(page.commonObjs, page.objs, true)
+
+    const svg = await svgGfx.getSVG(opList, viewport)
+    svg.style.width = '100%'
+    svg.style.height = '100%'
+    svg.classList.add('render')
+
+    return svg
   }
 
   const renderPage = async (page, renderingType) => {

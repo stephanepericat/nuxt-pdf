@@ -18,9 +18,7 @@ export default defineComponent({
 
     throttledWatch(
       [x, y, isScrolling, arrivedState, directions],
-      () => {
-        emit('scroll', { x, y, isScrolling, arrivedState, directions })
-      },
+      () => emit('scroll', { x, y, isScrolling, arrivedState, directions }),
       { throttle: 250 }
     )
 

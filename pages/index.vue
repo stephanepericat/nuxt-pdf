@@ -16,7 +16,7 @@
         :key="page._pageIndex"
         class="pdf-page"
         :page="page"
-        rendering-type="canvas"
+        rendering-type="svg"
       />
     </PdfViewer>
   </div>
@@ -58,7 +58,7 @@ export default defineComponent({
     }
 
     const onScroll = (evt) => {
-      consola.info('scroll evt', evt)
+      // consola.info('scroll evt', evt)
     }
 
     const { getFile, getPages } = usePdfData($pdf)
