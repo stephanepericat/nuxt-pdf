@@ -16,25 +16,31 @@
 
 <script>
 import consola from 'consola'
+import { defineComponent } from '@nuxtjs/composition-api'
 
-export default {
+export default defineComponent({
   name: 'IndexPage',
 
-  methods: {
-    onDownload() {
+  setup() {
+    const onDownload = () => {
       consola.info('download...')
-    },
+    }
 
-    onPrint() {
+    const onPrint = () => {
       consola.info('print...')
-    },
+    }
+
+    return {
+      onDownload,
+      onPrint,
+    }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
 .app {
   .viewer-container {
-    background-color: #999;
+    background-color: #666;
     height: calc(100vh - 56px);
   }
 }
