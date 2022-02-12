@@ -16,15 +16,15 @@
 
 <script>
 import consola from 'consola'
-import { defineComponent, onMounted } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, useContext } from '@nuxtjs/composition-api'
 
 import usePdfData from '~/composables/usePdfData'
 
 export default defineComponent({
   name: 'IndexPage',
 
-  setup(_, { root }) {
-    const { $pdf } = root
+  setup() {
+    const { $pdf } = useContext()
 
     const onDownload = () => {
       consola.info('download...')
