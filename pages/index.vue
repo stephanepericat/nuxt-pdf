@@ -10,14 +10,15 @@
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <div class="viewer-container">
+    <PdfViewer class="viewer-container">
       <PdfPage
         v-for="page in pages"
         :key="page._pageIndex"
+        class="pdf-page"
         :page="page"
         rendering-type="canvas"
       />
-    </div>
+    </PdfViewer>
   </div>
 </template>
 
@@ -29,6 +30,8 @@ import {
   ref,
   useContext,
 } from '@nuxtjs/composition-api'
+
+import PdfViewer from '~/components/Viewer.vue'
 import PdfPage from '~/components/Page.vue'
 
 import usePdfData from '~/composables/usePdfData'
@@ -38,6 +41,7 @@ export default defineComponent({
 
   components: {
     PdfPage,
+    PdfViewer,
   },
 
   setup() {
@@ -71,9 +75,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 .app {
   .viewer-container {
-    background-color: #666;
     height: calc(100vh - 56px);
-    overflow: auto;
+  }
+
+  .pdf-page {
+    margin: 40px auto;
+    max-width: 1200px;
   }
 }
 </style>

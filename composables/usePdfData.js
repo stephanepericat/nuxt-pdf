@@ -1,7 +1,7 @@
 import { ref } from '@nuxtjs/composition-api'
 
 export default ($pdf) => {
-  const CANVAS_SCALE = 1.5
+  const CANVAS_SCALE = 2.0
 
   const pageCount = ref(0)
 
@@ -32,7 +32,7 @@ export default ($pdf) => {
     const canvas = document?.createElement('canvas') || null
 
     if (!canvas) {
-      throw new Error('Casnnot create page canvas')
+      throw new Error('Cannot create page canvas')
     }
 
     const viewport = page.getViewport({ scale: CANVAS_SCALE })
@@ -43,6 +43,7 @@ export default ($pdf) => {
     canvas.height = Math.floor(viewport.height * outputScale)
     canvas.style.width = '100%'
     canvas.style.height = '100%'
+    canvas.classList.add('render')
 
     const transform =
       outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null

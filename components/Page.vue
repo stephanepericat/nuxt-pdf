@@ -1,13 +1,12 @@
 <template>
   <div ref="container" class="pdf-page">
-    <div class="text-layer"></div>
+    <div ref="textLayer" class="text-layer"></div>
   </div>
 </template>
 <script>
 import consola from 'consola'
 // eslint-disable-next-line no-unused-vars
 import {
-  computed,
   defineComponent,
   onMounted,
   ref,
@@ -30,27 +29,29 @@ export default defineComponent({
 
   setup(props) {
     const container = ref(null)
-    const textLayer = computed(
-      () => container.value?.querySelector('.text-layer') || null
-    )
+    const textLayer = ref(null)
+
     const { $pdf } = useContext()
 
     const { page, renderingType } = toRefs(props)
 
     const { renderPage } = usePdfData($pdf)
 
-    onMounted(async () => {
+    const renderView = async () => {
       try {
         const view = await renderPage(page.value, renderingType.value)
         container.value.insertBefore(view, textLayer.value)
       } catch (e) {
         consola.error(e)
       }
-    })
+    }
+
+    onMounted(renderView)
 
     return {
       container,
       textLayer,
+      renderView,
     }
   },
 })
@@ -59,7 +60,15 @@ export default defineComponent({
 .pdf-page {
   position: relative;
   background: #fff;
-  margin: 40px auto;
-  max-width: 1200px;
+
+  .text-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // background: #f70;
+    // opacity: 0.25;
+  }
 }
 </style>
