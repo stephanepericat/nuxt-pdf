@@ -34,11 +34,12 @@ export default defineComponent({
       consola.info('print...')
     }
 
-    const { getFile } = usePdfData($pdf)
+    const { getFile, getPages } = usePdfData($pdf)
 
     onMounted(async () => {
       const doc = await getFile('/compressed.tracemonkey-pldi-09.pdf')
-      consola.info('mounted', doc)
+      const pages = await getPages(doc)
+      consola.info('mounted', pages)
     })
 
     return {
