@@ -10,21 +10,40 @@
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <div class="viewer-container">contents</div>
+    <div class="viewer-container">
+      <PdfPage
+        v-for="page in pages"
+        :key="page._pageIndex"
+        :page="page"
+        rendering-type="canvas"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import consola from 'consola'
-import { defineComponent, onMounted, useContext } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  useContext,
+} from '@nuxtjs/composition-api'
+import PdfPage from '~/components/Page.vue'
 
 import usePdfData from '~/composables/usePdfData'
 
 export default defineComponent({
   name: 'IndexPage',
 
+  components: {
+    PdfPage,
+  },
+
   setup() {
     const { $pdf } = useContext()
+    const doc = ref(null)
+    const pages = ref(null)
 
     const onDownload = () => {
       consola.info('download...')
@@ -37,14 +56,14 @@ export default defineComponent({
     const { getFile, getPages } = usePdfData($pdf)
 
     onMounted(async () => {
-      const doc = await getFile('/compressed.tracemonkey-pldi-09.pdf')
-      const pages = await getPages(doc)
-      consola.info('mounted', pages)
+      doc.value = await getFile('/compressed.tracemonkey-pldi-09.pdf')
+      pages.value = await getPages(doc.value)
     })
 
     return {
       onDownload,
       onPrint,
+      pages,
     }
   },
 })
@@ -54,6 +73,7 @@ export default defineComponent({
   .viewer-container {
     background-color: #666;
     height: calc(100vh - 56px);
+    overflow: auto;
   }
 }
 </style>
