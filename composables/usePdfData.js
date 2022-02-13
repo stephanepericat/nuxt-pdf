@@ -88,10 +88,43 @@ export default ($pdf) => {
     }
   }
 
+  const renderTextLayer = async (page) => {
+    const SVG_NS = 'http://www.w3.org/2000/svg'
+    const textContent = await page.getTextContent()
+    const viewport = page.getViewport({ scale: $pdf.PixelsPerInch.CSS })
+
+    const svg = document.createElementNS(SVG_NS, 'svg:svg')
+    svg.setAttribute('width', viewport.width + 'px')
+    svg.setAttribute('height', viewport.height + 'px')
+    // items are transformed to have 1px font size
+    svg.setAttribute('font-size', 1)
+
+    // processing all items
+    textContent.items.forEach(function (textItem) {
+      // we have to take in account viewport transform, which includes scale,
+      // rotation and Y-axis flip, and not forgetting to flip text.
+      const tx = $pdf.Util.transform(
+        $pdf.Util.transform(viewport.transform, textItem.transform),
+        [1, 0, 0, -1, 0, 0]
+      )
+      const style = textContent.styles[textItem.fontName]
+      // adding text element
+      const text = document.createElementNS(SVG_NS, 'svg:text')
+      text.setAttribute('transform', 'matrix(' + tx.join(' ') + ')')
+      text.setAttribute('font-family', style.fontFamily)
+      text.textContent = textItem.str
+      svg.appendChild(text)
+      svg.classList.add('text-overlay')
+      svg.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`)
+    })
+    return svg
+  }
+
   return {
     getBase64,
     getFile,
     getPages,
     renderPage,
+    renderTextLayer,
   }
 }

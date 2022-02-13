@@ -35,12 +35,14 @@ export default defineComponent({
 
     const { page, renderingType } = toRefs(props)
 
-    const { renderPage } = usePdfData($pdf)
+    const { renderPage, renderTextLayer } = usePdfData($pdf)
 
     const renderView = async () => {
       try {
         const view = await renderPage(page.value, renderingType.value)
         container.value.insertBefore(view, textLayer.value)
+        const textContent = await renderTextLayer(page.value)
+        textLayer.value.appendChild(textContent)
       } catch (e) {
         consola.error(e)
       }
@@ -61,14 +63,18 @@ export default defineComponent({
   position: relative;
   background: #fff;
 
-  .text-layer {
+  ::v-deep .text-layer {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    // background: #f70;
-    // opacity: 0.25;
+
+    .text-overlay {
+      width: 100%;
+      height: 100%;
+      fill: transparent;
+    }
   }
 }
 </style>
